@@ -1,4 +1,7 @@
-const fs = require("fs")
+const fs = require("fs");
+const ohm = require("ohm-js");
+const ohmfile = fs.readFileSync('grammar.ohm', 'utf-8');
+const grammar = ohm.grammar(ohmfile);
 let code;
 
 try {
