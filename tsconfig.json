@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"removeComments": true,
+		"noImplicitAny": true,
+		"preserveConstEnums": true,
+		"target": "esnext",
+		"sourceMap": false,
+		"esModuleInterop": true
+	},
+	"exclude": [
+		"node_modules"
+	]
+}

@@ -1,0 +1,3 @@
+# HEY, REPLIT USERS! HAVING PROBLEMS?
+# Download the v16 binary via npm in shell
+run = "./node16 index.js"
