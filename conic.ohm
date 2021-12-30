@@ -3,7 +3,7 @@ ConicLang {
 	Statement		=	CodeBlock				-- Block
 				|	Declaration					-- Declaration
                 |	Assignment EOL				-- Assignment
-                |	VarVal	EOL			-- Call
+                |	VarVal	EOL					-- Call
             	|	break EOL					-- Break
             	|	return Expression? EOL		-- Return
             	|	comment
@@ -13,7 +13,6 @@ ConicLang {
     AssignQequal	=	VarVal mathOp "=" Expression
     
     Expression		=	Literal
-    			//|	AssignIncrement
                 |	Assignment
                 |	VarVal
                 |	"(" Expression ")"		-- NestedExpression
@@ -50,8 +49,6 @@ ConicLang {
     			|	VarVal "." id					-- DotNotation
                 |	id
     
-    //Call			=	id "(" Args ")"
-    //Call			=	FVarVal "(" Args ")"
     Declaration		=	VariableD | FunctionD | ClassD
     VariableD		=	Type id ("=" Expression)? EOL
     FunctionD		=	Type id "(" Parameters ")" CodeBlock EOL?
