@@ -1,0 +1,95 @@
+ConicLang {
+	Program			=	Statement+
+	Statement		=	CodeBlock				-- Block
+				|	Declaration					-- Declaration
+                |	Assignment EOL				-- Assignment
+                |	VarVal	EOL					-- Call
+            	|	break EOL					-- Break
+            	|	return Expression? EOL		-- Return
+            	|	comment
+    Assignment		=	AssignEqual | AssignIncrement | AssignQequal
+    AssignEqual		=	VarVal "=" Expression
+    AssignIncrement	=	VarVal incrementOp | incrementOp VarVal
+    AssignQequal	=	VarVal mathOp "=" Expression
+    
+    Expression		=	Literal
+    			//|	AssignIncrement
+                |	Assignment
+                |	VarVal
+                |	"(" Expression ")"			-- NestedExpression
+    
+    incrementOp		=	"++" | "--"
+    mathOp			=	"+" | "-" | "*" | "/"
+    
+    Literal			=	null
+	   			|	true
+    			|	false
+        		|	numLiteral
+        		|	strLiteral
+    
+    char			=	escapeSequence
+		    	|	~"\\" ~"\"" ~"'" ~"\n" any
+    
+    escapeSequence	=	"\\\\" | "\\\"" | "\\'"
+				| "\\n" | "\\t" // | hexSequence
+    
+    numLiteral		=	digit+
+				|	digit+ "." digit+				-- Floats
+        
+    strLiteral		=	"\"" (char | "\'")* "\""
+    
+    //FVarVal			=	Call | VarVal
+    
+    VarVal			=	VarVal "(" Args ")"		-- Call
+    			|	VarVal "[" Expression "]"	-- Superscript
+    			|	VarVal "." id				-- DotNotation
+                |	id
+    
+    //Call			=	id "(" Args ")"
+    //Call			=	FVarVal "(" Args ")"
+    Declaration		=	VariableD | FunctionD | ClassD
+    VariableD		=	Type id ("=" Expression)? EOL
+    FunctionD		=	Type id "(" Parameters ")" CodeBlock
+    ClassD			=	ClassType id CodeBlock
+    EOL				=	";"
+    Args			=	ListOf<Expression, ",">
+    Parameters		=	(Type id ("," Type id)*)?
+    CodeBlock		=	"{" Statement* "}"
+    ClassType		=	class | int
+    Type			=	Type "[] "			-- ArraysOfType
+				|	primitiveType
+        		|	id
+    
+    id				=	~keyword letter idchar*
+    idchar			=	"_" | alnum
+    primitiveType	=	void | bool | num | str
+    
+    keyword			=	bool | if | break | else | num
+				| new | return | int | null | while | class
+        		| for | true | false | str | void
+
+    // Types
+    void			=	"void" ~idchar
+    bool			=	"bool" ~idchar
+    num				=	"num" ~idchar
+    str				=	"str" ~idchar
+    int				=	"int" ~idchar	// INTERFACE, NOT INTEGER
+    class			=	"class" ~idchar
+    
+    // Keywords
+    null			=	"null" ~idchar
+    if				=	"if" ~idchar
+    break			=	"break" ~idchar
+    else			=	"else" ~idchar
+    for				=	"for" ~idchar
+    new				=	"new" ~idchar
+    return			=	"return" ~idchar
+    while			=	"while" ~idchar
+    true			=	"true" ~idchar
+    false			=	"false" ~idchar
+    
+    space			:=	"\x20" | "\x09" | "\x0A" | "\x0D"
+    comment			=	slComment | mlComment
+    slComment		=	"//" (~"\n" any)* "\n"
+    mlComment		=	"/*" (~"*/" any)* "*/"
+}
