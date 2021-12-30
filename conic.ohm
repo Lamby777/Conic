@@ -3,7 +3,7 @@ ConicLang {
 	Statement		=	CodeBlock				-- Block
 				|	Declaration					-- Declaration
                 |	Assignment EOL				-- Assignment
-                |	VarVal	EOL					-- Call
+                |	VarVal	EOL			-- Call
             	|	break EOL					-- Break
             	|	return Expression? EOL		-- Return
             	|	comment
@@ -16,7 +16,7 @@ ConicLang {
     			//|	AssignIncrement
                 |	Assignment
                 |	VarVal
-                |	"(" Expression ")"			-- NestedExpression
+                |	"(" Expression ")"		-- NestedExpression
     
     incrementOp		=	"++" | "--"
     mathOp			=	"+" | "-" | "*" | "/"
@@ -26,6 +26,8 @@ ConicLang {
     			|	false
         		|	numLiteral
         		|	strLiteral
+                |	ArrLiteral
+                |	ObjLiteral
     
     char			=	escapeSequence
 		    	|	~"\\" ~"\"" ~"'" ~"\n" any
@@ -38,35 +40,38 @@ ConicLang {
         
     strLiteral		=	"\"" (char | "\'")* "\""
     
+    ArrLiteral		=	"[" (Args) "]"
+    ObjLiteral		=	"{" LabeledArgs "}"
+    
     //FVarVal			=	Call | VarVal
     
     VarVal			=	VarVal "(" Args ")"		-- Call
     			|	VarVal "[" Expression "]"	-- Superscript
-    			|	VarVal "." id				-- DotNotation
+    			|	VarVal "." id					-- DotNotation
                 |	id
     
     //Call			=	id "(" Args ")"
     //Call			=	FVarVal "(" Args ")"
     Declaration		=	VariableD | FunctionD | ClassD
     VariableD		=	Type id ("=" Expression)? EOL
-    FunctionD		=	Type id "(" Parameters ")" CodeBlock
+    FunctionD		=	Type id "(" Parameters ")" CodeBlock EOL?
     ClassD			=	ClassType id CodeBlock
     EOL				=	";"
     Args			=	ListOf<Expression, ",">
+    LabeledVals		=	id ":" Expression
+    LabeledArgs		=	ListOf<LabeledVals, ",">
     Parameters		=	(Type id ("," Type id)*)?
     CodeBlock		=	"{" Statement* "}"
     ClassType		=	class | int
-    Type			=	Type "[] "			-- ArraysOfType
-				|	primitiveType
-        		|	id
+    Type			=	primitiveType | id
     
     id				=	~keyword letter idchar*
     idchar			=	"_" | alnum
-    primitiveType	=	void | bool | num | str
+    primitiveType	=	void | bool | num | str | arr | obj
     
     keyword			=	bool | if | break | else | num
 				| new | return | int | null | while | class
-        		| for | true | false | str | void
+        		| for | true | false | str | void | arr | obj
 
     // Types
     void			=	"void" ~idchar
@@ -75,9 +80,11 @@ ConicLang {
     str				=	"str" ~idchar
     int				=	"int" ~idchar	// INTERFACE, NOT INTEGER
     class			=	"class" ~idchar
+    arr				=	"arr" ~idchar
+    obj				=	"obj" ~idchar
+    null			=	"null" ~idchar
     
     // Keywords
-    null			=	"null" ~idchar
     if				=	"if" ~idchar
     break			=	"break" ~idchar
     else			=	"else" ~idchar
