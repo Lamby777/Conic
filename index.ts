@@ -1,19 +1,19 @@
 // The Conic Language Interpreter
 "use strict";
 
-import fs	from "fs";
-import ohm	from "ohm-js";
+import {readFileSync}	from "fs";
+import ohm				from "ohm-js";
 
-const ohmfile = fs.readFileSync('grammar.ohm', 'utf-8');
-const grammar = ohm.grammar(ohmfile);
+const grammar = ohm.grammar(readFileSync("conic.ohm", "utf-8"));
 
+const mainFile: string = process.argv[2];
 let code: string;
 
 try {
-	code = fs.readFileSync('code.con', 'utf8');
+	code = readFileSync(mainFile ?? "main.con", "utf8");
 } catch (err) {
-	console.error("There was a problem loading code.");
-	console.error(err);
+	console.error("There was a problem loading code. Error:");
+	console.error(err.message);
 }
 
 lexer(code);
