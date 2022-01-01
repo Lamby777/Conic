@@ -16,8 +16,8 @@ try {
 	console.error(err.message);
 }
 
-lexer(code);
+let semantics = grammar.createSemantics().addOperation("run", {
+	Expression(val) {return val},
+})
 
-function lexer(code: string) {
-	// forget that BS, gonna be using Ohm :)
-}
+code;

@@ -3,9 +3,17 @@ ConicLang {
 	Statement		=	CodeBlock				-- Block
 				|	Declaration					-- Declaration
                 |	Assignment EOL				-- Assignment
-                |	VarVal	EOL					-- Call
+                |	VarVal	EOL			-- Call
             	|	break EOL					-- Break
             	|	return Expression? EOL		-- Return
+                |  if Expression CodeBlock
+                 (else if Expression CodeBlock)*
+                 (else CodeBlock)?              -- if
+              	|  while Expression CodeBlock            -- while
+              	|  for "("
+                 (Type id "=" Expression)? ";"
+                 Expression? ";"
+                 Assignment? ")"			-- for
             	|	comment
     Assignment		=	AssignEqual | AssignIncrement | AssignQequal
     AssignEqual		=	VarVal "=" Expression
@@ -13,6 +21,7 @@ ConicLang {
     AssignQequal	=	VarVal mathOp "=" Expression
     
     Expression		=	Literal
+    			//|	AssignIncrement
                 |	Assignment
                 |	VarVal
                 |	"(" Expression ")"		-- NestedExpression
@@ -44,11 +53,15 @@ ConicLang {
     
     //FVarVal			=	Call | VarVal
     
-    VarVal			=	VarVal "(" Args ")"		-- Call
+    VarVal			= MVarVal | Literal
+    
+    MVarVal			=	VarVal "(" Args ")"		-- Call
     			|	VarVal "[" Expression "]"	-- Superscript
     			|	VarVal "." id					-- DotNotation
                 |	id
     
+    //Call			=	id "(" Args ")"
+    //Call			=	FVarVal "(" Args ")"
     Declaration		=	VariableD | FunctionD | ClassD
     VariableD		=	Type id ("=" Expression)? EOL
     FunctionD		=	Type id "(" Parameters ")" CodeBlock EOL?
@@ -69,6 +82,7 @@ ConicLang {
     keyword			=	bool | if | break | else | num
 				| new | return | int | null | while | class
         		| for | true | false | str | void | arr | obj
+        //
 
     // Types
     void			=	"void" ~idchar
