@@ -12,12 +12,12 @@ let code: string;
 try {
 	code = readFileSync(mainFile ?? "main.con", "utf8");
 } catch (err) {
-	console.error("There was a problem loading code. Error:");
-	console.error(err.message);
+	console.error(
+		"There was a problem loading code. Error:\n" + err.message);
 }
 
 let semantics = grammar.createSemantics().addOperation("run", {
 	Expression(val) {return val},
-})
+});
 
 code;
