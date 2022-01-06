@@ -3,17 +3,18 @@ ConicLang {
 	Statement		=	CodeBlock				-- Block
 				|	Declaration					-- Declaration
                 |	Assignment EOL				-- Assignment
-                |	VarVal	EOL			-- Call
+                |	VarVal	EOL					-- Call
             	|	break EOL					-- Break
             	|	return Expression? EOL		-- Return
-                |  if Expression CodeBlock
-                 (else if Expression CodeBlock)*
-                 (else CodeBlock)?              -- if
-              	|  while Expression CodeBlock            -- while
+                |  if Expression Statement
+                 (else if Expression Statement)*
+                 (else Statement)?              -- if
+              	|  while Expression Statement	-- while
               	|  for "("
                  (Type id "=" Expression)? ";"
                  Expression? ";"
-                 Assignment? ")"			-- for
+                 Assignment? ")"
+                 Statement						-- for
             	|	comment
     Assignment		=	AssignEqual | AssignIncrement | AssignQequal
     AssignEqual		=	VarVal "=" Expression
@@ -41,17 +42,22 @@ ConicLang {
 		    	|	~"\\" ~"\"" ~"'" ~"\n" any
     
     escapeSequence	=	"\\\\" | "\\\"" | "\\'"
-				| "\\n" | "\\t" // | hexSequence
+				| "\\n" | "\\t" | "\\||" // | hexSequence
     
     numLiteral		=	digit+
 				|	digit+ "." digit+				-- Floats
-        
-    strLiteral		=	"\"" (char | "\'")* "\""
+    
+    strLiteral		=	"\"" (applySyntactic<StrInterpolate> | char | "\'")*
+							"\""	-- DoubleQuote
+    			|	"\'" (applySyntactic<StrInterpolate> | char | "\"")*
+							"\'"	-- SingleQuote
+    
+    StrInterpolate			=	"||" Expression "||"
     
     ArrLiteral		=	"[" (Args) "]"
     ObjLiteral		=	"{" LabeledArgs "}"
     
-    //FVarVal			=	Call | VarVal
+    //FVarVal		=	Call | VarVal
     
     VarVal			= MVarVal | Literal
     
@@ -64,7 +70,7 @@ ConicLang {
     //Call			=	FVarVal "(" Args ")"
     Declaration		=	VariableD | FunctionD | ClassD
     VariableD		=	Type id ("=" Expression)? EOL
-    FunctionD		=	Type id "(" Parameters ")" CodeBlock EOL?
+    FunctionD		=	Type id "(" Parameters ")" Statement EOL?
     ClassD			=	ClassType id CodeBlock
     EOL				=	";"
     Args			=	ListOf<Expression, ",">
@@ -82,7 +88,6 @@ ConicLang {
     keyword			=	bool | if | break | else | num
 				| new | return | int | null | while | class
         		| for | true | false | str | void | arr | obj
-        //
 
     // Types
     void			=	"void" ~idchar
