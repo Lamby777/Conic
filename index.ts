@@ -21,13 +21,31 @@ let semantics = grammar.createSemantics().addOperation("run", {
 
 	// Statements
 	Statement_Call(varval, _eol) {
-		//
+		return varval.run();
 	},
 
 	Statement_if(_if, boolcheck, ifblock, _elseif, _elif,
 				 boolcheck2, elifblock, _else, elseblock) {
-		//
+		//console.log(_if.sourceString);
+		//console.log(boolcheck.sourceString);
+		//console.log(ifblock.sourceString);
+		//console.log(_elseif.sourceString);
+		//console.log(_elif.sourceString);
+		//console.log(boolcheck2.sourceString);
+		//console.log(elifblock.sourceString);
+		//console.log(_else.sourceString);
+		//console.log(elseblock.sourceString);
 	},
+
+
+	// VarVal stuff
+	VarVal(val) {
+		return val.run();
+	},
+
+	MVarVal_Call(varval, _open, args, _close) {
+		// Function call
+	}
 
 	
 	// Declarations
