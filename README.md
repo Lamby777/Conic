@@ -1,9 +1,9 @@
 # Conic (Programming Language)
 
-<p align="center">
-	<img src="https://carbonado-site.dexiethesheep.repl.co/ConicLogo.png" width="175" height="145"><br>
-	<img src="https://carbonado-site.dexiethesheep.repl.co/CarbonadoLogo.png" width="42" height="42">
-</p>
+<h1 align="center">
+	<img src="https://carbonado-site.dexiethesheep.repl.co/ConicLogo.png" width="175" height="145"><br>+<br><br>
+	<img src="https://carbonado-site.dexiethesheep.repl.co/CarbonadoLogo.png" width="63" height="63">
+</h1>
 
 ## What is it for?
 
