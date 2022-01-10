@@ -2,6 +2,8 @@
 "use strict";
 
 import {readFileSync}	from "fs";
+import {get as loget,
+		set as loset}	from "lodash";
 import ohm				from "ohm-js";
 
 const grammar = ohm.grammar(readFileSync("conic.ohm", "utf-8"));
@@ -71,7 +73,7 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	},
 	Statement_Assignment(node, _eol) { return node.run(); },
 	AssignEqual(varval, _eq, newval) {
-		globalSpace[varval.sourceString] = newval.run();
+		loset(globalSpace, varval.sourceString, newval.run());
 		console.log(varval.sourceString);
 	},
 	AssignQequal(varval, mathop, _eq, coefficient) {},
