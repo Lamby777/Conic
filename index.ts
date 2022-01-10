@@ -37,11 +37,15 @@ let semantics = grammar.createSemantics().addOperation("run", {
 		//console.log(elseblock.sourceString);
 	},
 
+	Statement_Print(_conout, exp, _eol) {
+		console.log(exp.run());
+	},
+
 
 	// VarVal stuff
-	VarVal(val) {
-		return val.run();
-	},
+	//VarVal(val) {
+	//	return val.run();
+	//},
 
 	MVarVal_Call(varval, _open, args, _close) {
 		// Function call
@@ -60,6 +64,10 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	
 	// Literals
 	numLiteral(_) {return parseFloat(this.sourceString)},
+	strLiteral(_) {return String(this.sourceString.slice(1,-1))},
+	StrInterpolate(_p1, _, _p2) {
+		return this.run(this.sourceString.slice(2,-2));
+	},
 	comment(_) {},
 });
 

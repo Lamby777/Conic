@@ -1,12 +1,12 @@
 ConicLang {
 	Program			=	Statement+
 	Statement		=	CodeBlock				-- Block
+				|	conout Expression? EOL		-- Print
 				|	Declaration					-- Declaration
                 |	Assignment EOL				-- Assignment
                 |	Expression	EOL					-- Call
             	|	break EOL					-- Break
             	|	return Expression? EOL		-- Return
-				|	conout Expression? EOL		-- Print
                 |  if Expression Statement
                  (else if Expression Statement)*
                  (else Statement)?              -- if
