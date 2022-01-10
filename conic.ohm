@@ -24,13 +24,25 @@ ConicLang {
     
     Expression		=	conin
 				|	Literal
+                |	BooleanExpression
     			//|	AssignIncrement
                 |	Assignment
+                |	TernaryOperation
                 |	VarVal
                 |	"(" Expression ")"		-- NestedExpression
     
     incrementOp		=	"++" | "--"
     mathOp			=	"+" | "-" | "*" | "/"
+    
+    TernaryOperation		=	Expression "?" Expression (":" Expression)?
+    
+    // List of boolean operators that go before expressions
+    booleanPreoperator		=	"!"
+    
+    comparisonOperator		=	">" | "<" | "==" | "!="
+    
+    BooleanExpression	=	booleanPreoperator Expression		-- Prefixed
+    			|	Expression comparisonOperator Expression		-- Comparison
     
     Literal			=	null
 	   			|	true
