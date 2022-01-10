@@ -3,9 +3,10 @@ ConicLang {
 	Statement		=	CodeBlock				-- Block
 				|	Declaration					-- Declaration
                 |	Assignment EOL				-- Assignment
-                |	VarVal	EOL					-- Call
+                |	Expression	EOL					-- Call
             	|	break EOL					-- Break
             	|	return Expression? EOL		-- Return
+				|	conout Expression? EOL		-- Print
                 |  if Expression Statement
                  (else if Expression Statement)*
                  (else Statement)?              -- if
@@ -21,7 +22,8 @@ ConicLang {
     AssignIncrement	=	VarVal incrementOp | incrementOp VarVal
     AssignQequal	=	VarVal mathOp "=" Expression
     
-    Expression		=	Literal
+    Expression		=	conin
+				|	Literal
     			//|	AssignIncrement
                 |	Assignment
                 |	VarVal
@@ -110,7 +112,9 @@ ConicLang {
     while			=	"while" ~idchar
     true			=	"true" ~idchar
     false			=	"false" ~idchar
-    
+	conin			=	"conin" ~idchar
+	conout			=	"conout" ~idchar
+
     space			:=	"\x20" | "\x09" | "\x0A" | "\x0D"
     comment			=	slComment | mlComment
     slComment		=	"//" (~"\n" any)* "\n"

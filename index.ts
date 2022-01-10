@@ -45,7 +45,7 @@ let semantics = grammar.createSemantics().addOperation("run", {
 
 	MVarVal_Call(varval, _open, args, _close) {
 		// Function call
-	}
+	},
 
 	
 	// Declarations
@@ -53,7 +53,7 @@ let semantics = grammar.createSemantics().addOperation("run", {
 		//
 	},
 	
-	FunctionD(rtype, fname, _open, params, _close, code, _eol) {
+	FunctionD(rtype, fname, _open, params, _close, codeblock, _eol) {
 		//
 	},
 

@@ -3,15 +3,15 @@
 bool running = true;
 
 num x = 78;
-conout("||x++|| is my favorite number!");
+conout "||x++|| is my favorite number!";
 
 str greeting = "Hello";
-str name = conin();
-conout("||greeting||, ||name||!");
+str name = conin;
+conout "||greeting||, ||name||!";
 
 void doStuff(num age) {
-	conout("Hey, look! I'm doing stuff!");
-	//conout(age > 2 ? "I can talk!" : "googoo gaga");
+	conout "Hey, look! I'm doing stuff!";
+	conout (age > 2 ? "I can talk!" : "googoo gaga");
 }
 
 if (running) doStuff(16);
