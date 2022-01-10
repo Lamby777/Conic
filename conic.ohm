@@ -19,7 +19,8 @@ ConicLang {
             	|	comment
     Assignment		=	AssignEqual | AssignIncrement | AssignQequal
     AssignEqual		=	VarVal "=" Expression
-    AssignIncrement	=	VarVal incrementOp | incrementOp VarVal
+    AssignIncrement	=	(VarVal incrementOp) -- Before
+    			| (incrementOp VarVal) -- After
     AssignQequal	=	VarVal mathOp "=" Expression
     
     Expression		=	conin
@@ -76,9 +77,12 @@ ConicLang {
     VarVal			= MVarVal | Literal
     
     MVarVal			=	VarVal "(" Args ")"		-- Call
-    			|	VarVal "[" Expression "]"	-- Superscript
-    			|	VarVal "." id					-- DotNotation
+    			|	SubVarVal
                 |	id
+    
+    SubVarVal		= VarVal "[" Expression "]"	-- Superscript
+    			|	VarVal "." id					-- DotNotation
+                
     
     //Call			=	id "(" Args ")"
     //Call			=	FVarVal "(" Args ")"

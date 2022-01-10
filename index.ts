@@ -18,6 +18,7 @@ try {
 
 let semantics = grammar.createSemantics().addOperation("run", {
 	_iter(...children) {return children.map(val => val.run())},
+	_terminal() {return false},
 
 	// Statements
 	Statement_Call(varval, _eol) {
@@ -62,18 +63,29 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	},
 
 	
-	// Literals
+	// Literals and value-returners
 	numLiteral(_) {return parseFloat(this.sourceString)},
 	strLiteral(_) {return String(this.sourceString.slice(1,-1))},
 	StrInterpolate(_p1, _, _p2) {
 		return this.run(this.sourceString.slice(2,-2));
 	},
+	Statement_Assignment(node, _eol) { return node.run(); },
+	AssignEqual(varval, _eq, newval) {
+		globalSpace[varval.sourceString] = newval.run();
+		console.log(varval.sourceString);
+	},
+	AssignQequal(varval, mathop, _eq, coefficient) {},
+	AssignIncrement_Before(op, varval) {},
+	AssignIncrement_After(varval, op) {},
+
 	comment(_) {},
 });
 
+
+
+const globalSpace: Record<any, any> = {};
+
 execute(code);
-
-
 
 function execute(code: string) {
 	let matched = grammar.match(code);
@@ -82,4 +94,6 @@ function execute(code: string) {
 		throw SyntaxError("Compiler error: " + matched);
 	else
 		semantics(matched).run();
+
+	console.log(globalSpace);
 }
