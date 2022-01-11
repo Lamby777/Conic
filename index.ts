@@ -1,12 +1,13 @@
 // The Conic Language Interpreter
 "use strict";
 
-import {readFileSync}		from "fs";
+import {readFileSync}			from "fs";
 import {get as loget,
-		set as loset}		from "lodash";
-import ohm					from "ohm-js";
+		set as loset}			from "lodash";
+import ohm						from "ohm-js";
 import {ConObject,
-		ConicRuntimeError}	from "./classes";
+		ConicRuntimeError}		from "./classes";
+import	{question as prompt}	from "readline-sync";
 
 const grammar = ohm.grammar(readFileSync("conic.ohm", "utf-8"));
 
@@ -63,8 +64,14 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	},
 	
 	StrInterpolate(_p1, _, _p2) {
-		return this.run(this.sourceString.slice(2,-2));
+		return _.run();
 	},
+
+	conin(_) {
+		return prompt();
+	},
+
+	
 	
 	// Assignments
 	Statement_Assignment(node, _eol) { return node.run(); },
