@@ -1,10 +1,12 @@
 // The Conic Language Interpreter
 "use strict";
 
-import {readFileSync}	from "fs";
+import {readFileSync}		from "fs";
 import {get as loget,
-		set as loset}	from "lodash";
-import ohm				from "ohm-js";
+		set as loset}		from "lodash";
+import ohm					from "ohm-js";
+import {ConObject,
+		ConicRuntimeError}	from "./classes";
 
 const grammar = ohm.grammar(readFileSync("conic.ohm", "utf-8"));
 
@@ -57,7 +59,9 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	
 	// Declarations
 	VariableD(vtype, vname, _equal, newval, _eol) {
-		//
+		let conObject = new ConObject(vtype.sourceString);
+		conObject.value = newval.run();
+		loset(globalSpace, vname.sourceString, conObject);
 	},
 	
 	FunctionD(rtype, fname, _open, params, _close, codeblock, _eol) {
@@ -68,14 +72,26 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	// Literals and value-returners
 	numLiteral(_) {return parseFloat(this.sourceString)},
 	strLiteral(_) {return String(this.sourceString.slice(1,-1))},
+	ArrLiteral(_open, vals, _close) {
+		return []
+	},
+	
 	StrInterpolate(_p1, _, _p2) {
 		return this.run(this.sourceString.slice(2,-2));
 	},
+	
+	// Assignments
 	Statement_Assignment(node, _eol) { return node.run(); },
 	AssignEqual(varval, _eq, newval) {
 		let conObject: ConObject = loget(globalSpace, varval.sourceString);
-		conObject.value = newval.run();
-		loset(globalSpace, varval.sourceString, conObject);
+		if (conObject === undefined) {
+			// If variable doesn't exist
+			throw new ConicRuntimeError("Syntax",
+				"Could not assign to undefined!");
+		} else {
+			conObject.value = newval.run();
+			loset(globalSpace, varval.sourceString, conObject);
+		}
 	},
 	AssignQequal(varval, mathop, _eq, coefficient) {},
 	AssignIncrement_Before(op, varval) {},
@@ -99,10 +115,4 @@ function execute(code: string) {
 		semantics(matched).run();
 
 	console.log(globalSpace);
-}
-
-class ConObject {
-	constructor(public value: any, public type: string) {
-		//
-	}
 }

@@ -4,7 +4,7 @@ ConicLang {
 				|	conout Expression? EOL		-- Print
 				|	Declaration					-- Declaration
                 |	Assignment EOL				-- Assignment
-                |	Expression	EOL					-- Call
+                |	Expression	EOL				-- Call
             	|	break EOL					-- Break
             	|	return Expression? EOL		-- Return
                 |  if Expression Statement
@@ -26,7 +26,6 @@ ConicLang {
     Expression		=	conin
 				|	Literal
                 |	BooleanExpression
-    			//|	AssignIncrement
                 |	Assignment
                 |	TernaryOperation
                 |	VarVal
