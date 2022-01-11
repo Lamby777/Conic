@@ -12,11 +12,15 @@ export class ConObject implements ConValue {
 }
 
 export class ConicRuntimeError extends Error {
-	constructor(category:	string,
-				problem:	string,
-			   	lineNumber:	number,
-			   	colNumber:	number) {
-		super(category + " Error >> " + problem + "\n" +
-			  "L|C " + lineNumber + "|" + colNumber);
+	constructor(category:		string,
+				problem:		string,
+				//lineNumber?:	number | null,
+				//colNumber?:	number | null
+				linecolmsg:		string) {
+		super(linecolmsg + "\n" + category + " Error >> " + problem);
+		this.stack = null; // Prevent spamming console with 2 traces
+		
+		//super(category + " Error >> " + problem + "\n" +
+		//	  "L|C " + (lineNumber ?? "?") + "|" + (colNumber ?? "?"));
 	}
 }

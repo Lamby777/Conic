@@ -87,7 +87,8 @@ let semantics = grammar.createSemantics().addOperation("run", {
 		if (conObject === undefined) {
 			// If variable doesn't exist
 			throw new ConicRuntimeError("Syntax",
-				"Could not assign to undefined!");
+				"Could not assign to undefined!",
+				this.source.getLineAndColumnMessage());
 		} else {
 			conObject.value = newval.run();
 			loset(globalSpace, varval.sourceString, conObject);
