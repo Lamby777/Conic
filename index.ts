@@ -73,8 +73,9 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	},
 	Statement_Assignment(node, _eol) { return node.run(); },
 	AssignEqual(varval, _eq, newval) {
-		loset(globalSpace, varval.sourceString, newval.run());
-		console.log(varval.sourceString);
+		let conObject: ConObject = loget(globalSpace, varval.sourceString);
+		conObject.value = newval.run();
+		loset(globalSpace, varval.sourceString, conObject);
 	},
 	AssignQequal(varval, mathop, _eq, coefficient) {},
 	AssignIncrement_Before(op, varval) {},
@@ -98,4 +99,10 @@ function execute(code: string) {
 		semantics(matched).run();
 
 	console.log(globalSpace);
+}
+
+class ConObject {
+	constructor(public value: any, public type: string) {
+		//
+	}
 }
