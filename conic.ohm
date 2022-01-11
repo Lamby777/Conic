@@ -100,14 +100,14 @@ ConicLang {
     
     id				=	~keyword letter idchar*
     idchar			=	"_" | alnum
-    primitiveType	=	void | bool | num | str | arr | obj
+    primitiveType	=	empty | bool | num | str | arr | obj
     
     keyword			=	bool | if | break | else | num
 				| new | return | int | null | while | class
-        		| for | true | false | str | void | arr | obj
+        		| for | true | false | str | empty | arr | obj
 
     // Types
-    void			=	"void" ~idchar
+    empty			=	"empty" ~idchar
     bool			=	"bool" ~idchar
     num				=	"num" ~idchar
     str				=	"str" ~idchar

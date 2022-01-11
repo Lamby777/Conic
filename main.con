@@ -3,9 +3,9 @@
 bool running = false;
 running = true;
 
-arr x = [];
-x[y] = "yo";
-x.y2 = "hello human";
+//arr x = [];
+//x[y] = "yo";
+//x.y2 = "hello human";
 
 num x = 78;
 conout "||x++|| is my favorite number!";

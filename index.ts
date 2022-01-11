@@ -101,5 +101,6 @@ function execute(code: string) {
 	else
 		semantics(matched).run();
 
+	console.log("\n\n\nCode complete!\nVariable list: (For debugging)")
 	console.log(globalSpace);
 }
