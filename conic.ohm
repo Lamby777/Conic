@@ -1,7 +1,7 @@
 ConicLang {
 	Program			=	Statement+
 	Statement		=	CodeBlock				-- Block
-				|	conout Expression? EOL		-- Print
+				|	conout Expression EOL		-- Print
 				|	Declaration					-- Declaration
                 |	Assignment EOL				-- Assignment
                 |	Expression	EOL				-- Call

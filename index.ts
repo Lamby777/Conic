@@ -42,8 +42,9 @@ let semantics = grammar.createSemantics().addOperation("run", {
 		//
 	},
 
+	// conout = print statements
 	Statement_Print(_conout, exp, _eol) {
-		console.log(exp.run()[0].value);
+		console.log(exp.run().value);
 	},
 
 	MVarVal_Call(varval, _open, args, _close) {
