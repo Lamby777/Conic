@@ -5,11 +5,13 @@ import {readFileSync}			from "fs";
 import {get as loget,
 		set as loset}			from "lodash";
 import ohm						from "ohm-js";
-import {ConNumber,
+import {ConValue,
+		ConNumber,
 		ConString,
 		ConBoolean,
 		ConEmpty,
 		ConObject,
+		ConTainer,
 		ConicRuntimeError}		from "./classes";
 import	{question as prompt}	from "readline-sync";
 
@@ -22,7 +24,7 @@ try {
 	code = readFileSync(mainFile ?? "main.con", "utf8");
 } catch (err) {
 	console.error(
-		"There was a problem loading code. Error:\n" + err.message);
+			"There was a problem loading code. Error:\n" + err.message);
 }
 
 let semantics = grammar.createSemantics().addOperation("run", {
@@ -50,9 +52,8 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	
 	// Declarations
 	VariableD(vtype, vname, _equal, newval, _eol) {
-		let conObject = new ConObject(vtype.sourceString);
-		conObject.value = newval.run();
-		loset(globalSpace, vname.sourceString, conObject);
+		let cont = new ConTainer(vtype.sourceString, newval.run()[0]);
+		loset(globalSpace, vname.sourceString, cont);
 	},
 	
 	FunctionD(rtype, fname, _open, params, _close, codeblock, _eol) {
@@ -61,11 +62,15 @@ let semantics = grammar.createSemantics().addOperation("run", {
 
 	
 	// Literals and value-returners
-	numLiteral(_) {return parseFloat(this.sourceString)},
+	numLiteral(_) {
+		return new ConNumber(parseFloat(this.sourceString));
+	},
 	strLiteral(_) {
 		const str = this.sourceString.slice(1,-1);
 		return new ConString(str);
 	},
+	true(_) {return new ConBoolean(true)},
+	false(_) {return new ConBoolean(false)},
 	ArrLiteral(_open, vals, _close) {
 		return []
 	},
@@ -83,7 +88,7 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	// Assignments
 	Statement_Assignment(node, _eol) { return node.run(); },
 	AssignEqual(varval, _eq, newval) {
-		setVariable(varval.sourceString, newval.run());
+		dsetVariable(varval.sourceString, newval.run());
 		return getVariable(varval.sourceString).value;
 	},
 	AssignQequal(varval, mathop, _eq, coefficient) {
@@ -140,6 +145,12 @@ function setVariable(path: string, val: any) {
 	// If variable exists, assign to it
 	conObject.value = val;
 	loset(globalSpace, path, conObject);
+}
+
+function dsetVariable(path: string, val: any) {
+	let cont: ConTainer = getVariable(path);
+	cont.vhval = val; // assign to copy of reference
+	loset(globalSpace, path, cont); // assign copy to real
 }
 
 function getVariable(path: string) {

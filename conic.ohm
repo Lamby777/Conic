@@ -103,8 +103,9 @@ ConicLang {
     primitiveType	=	empty | bool | num | str | arr | obj
     
     keyword			=	bool | if | break | else | num
-				| new | return | int | null | while | class
-        		| for | true | false | str | empty | arr | obj
+				| conin | conout | new | return | int | null
+				| while | class | for | true | false | str
+				| empty | arr | obj
 
     // Types
     empty			=	"empty" ~idchar

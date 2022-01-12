@@ -1,15 +1,14 @@
 // Classes for index.ts
 "use strict";
 
-abstract class ConValue {
+export abstract class ConValue {
 	abstract vtype: string;
 	abstract value: any;
 }
 
 export class ConNumber extends ConValue {
-	public value: number;
 	public vtype = "num";
-	constructor() {
+	constructor(public value: number) {
 		super();
 	}
 }
@@ -18,13 +17,12 @@ export class ConString extends ConValue {
 	public vtype = "str";
 	constructor(public value: string = "") {
 		super();
-		//this.value = value;
 	}
 }
 
 export class ConBoolean extends ConValue {
 	public vtype = "bool";
-	constructor(public value: boolean | ConEmpty = false) {
+	constructor(public value: boolean) {
 		super();
 	}
 }
@@ -43,11 +41,21 @@ export class ConObject extends ConValue {
 
 /**	Used for variables.
  *	Holds a variable + its type and a
- *	reference to some ConValue child class it may store
-*/
+ *	reference to some ConValue object it may store */
 export class ConTainer {
-	// Type of variable's held value (aka variable's type)
-	public vhtype: string;
+	public vhtype:	string;		// Type of held value
+	public vhval:	ConValue;	// Held value (Reference to ConValue object)
+
+	constructor(vhtype?: string, vhval?: ConValue) {
+		if (vhval && vhtype === undefined) // Value given without type
+			throw new SyntaxError(
+				"Attempt to create untyped " +
+				"initialized ConTainer");
+
+		// Set given values (after guard function)
+		if (vhtype) this.vhtype = vhtype;
+		if (vhval) this.vhval = vhval;
+	}
 }
 
 export type PrimitiveValue =	ConNumber	| ConString |
