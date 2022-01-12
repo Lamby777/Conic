@@ -3,6 +3,23 @@
 bool running = false;
 running = true;
 
+if (true) {conout "hi";}
+if (false) conout "bye";
+
+{
+	conout "it's about drive";
+	conout "it's about power";
+	conout "we stay hungry";
+	conout "we devour";
+	conout "put in the work";
+	conout "put in the hours";
+	conout "and take";
+	conout "what's ours";
+}
+
+/*bool running = false;
+running = true;
+
 //arr x = [];
 //x[y] = "yo";
 //x.y2 = "hello human";
@@ -19,4 +36,4 @@ void doStuff(num age) {
 	conout (age > 2 ? "I can talk!" : "googoo gaga");
 }
 
-if (running) doStuff(16);
+if (running) doStuff(16);*/

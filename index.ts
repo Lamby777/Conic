@@ -24,7 +24,8 @@ let code: string;
 		code = readFileSync(mainFile ?? "main.con", "utf8");
 	} catch (err) {
 		console.error(
-				"There was a problem loading code. Error:\n" + err.message);
+				"There was a problem loading code. Error:\n" +
+				err.message);
 	}
 }
 
@@ -37,9 +38,17 @@ let semantics = grammar.createSemantics().addOperation("run", {
 		return varval.run();
 	},
 
-	Statement_if(_if, boolcheck, ifblock, _elseif, _elif,
-				 boolcheck2, elifblock, _else, elseblock) {
-		//
+	Statement_if(_if, boolcheck, ifcode, _elseif, _elif,
+				 boolcheck2, elifcode, _else, elsecode) {
+		// Debugging arguments
+		Array.from(arguments).forEach((val, i) => {
+			//console.log(i + ": " + val.sourceString);
+			//console.log(val.run());
+		});
+		
+		if (boolcheck.run().value) ifcode.run();
+		else if (_elseif && boolcheck2.run().value) elifcode.run();
+		else if (_else) elsecode.run();
 	},
 
 	// conout = print statements
@@ -47,9 +56,9 @@ let semantics = grammar.createSemantics().addOperation("run", {
 		console.log(exp.run().value);
 	},
 
-	MVarVal_Call(varval, _open, args, _close) {
+	//MVarVal_Call(varval, _open, args, _close) {
 		// Function call
-	},
+	//},
 
 	
 	// Declarations
@@ -83,6 +92,15 @@ let semantics = grammar.createSemantics().addOperation("run", {
 
 	conin(_) {
 		return new ConString(prompt());
+	},
+
+	Expression_NestedExpression(_open, exp, _close) {
+		return exp.run();
+	},
+
+	CodeBlock(_open, statements, _close) {
+		//statements.forEach((v: any) => v.run());
+		statements.run();
 	},
 
 	
