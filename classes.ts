@@ -2,20 +2,20 @@
 "use strict";
 
 abstract class ConValue {
-	abstract vtype: any;
+	abstract vtype: string;
 	abstract value: any;
 }
 
 export class ConNumber extends ConValue {
 	public value: number;
-	public vtype: "num";
+	public vtype = "num";
 	constructor() {
 		super();
 	}
 }
 
 export class ConString extends ConValue {
-	public vtype: "str";
+	public vtype = "str";
 	constructor(public value: string = "") {
 		super();
 		//this.value = value;
@@ -23,14 +23,14 @@ export class ConString extends ConValue {
 }
 
 export class ConBoolean extends ConValue {
-	public vtype: "bool";
+	public vtype = "bool";
 	constructor(public value: boolean | ConEmpty = false) {
 		super();
 	}
 }
 
 export class ConEmpty extends ConValue {
-	public vtype: "empty";
+	public vtype = "empty";
 	public value: null;
 }
 
@@ -46,7 +46,8 @@ export class ConObject extends ConValue {
  *	reference to some ConValue child class it may store
 */
 export class ConTainer {
-	public vtype: string;
+	// Type of variable's held value (aka variable's type)
+	public vhtype: string;
 }
 
 export type PrimitiveValue =	ConNumber	| ConString |
