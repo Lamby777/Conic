@@ -41,6 +41,14 @@ export class ConObject extends ConValue {
 	}
 }
 
+/**	Used for variables.
+ *	Holds a variable + its type and a
+ *	reference to some ConValue child class it may store
+*/
+export class ConTainer {
+	public vtype: string;
+}
+
 export type PrimitiveValue =	ConNumber	| ConString |
 								ConBoolean	| ConEmpty;
 

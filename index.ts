@@ -75,7 +75,7 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	},
 
 	conin(_) {
-		return prompt();
+		return new ConString(prompt());
 	},
 
 	
