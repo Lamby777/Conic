@@ -1,19 +1,14 @@
 // The Conic Language Interpreter
 "use strict";
 
-import {readFileSync}			from "fs";
 import {get as loget,
 		set as loset}			from "lodash";
-import ohm						from "ohm-js";
-import {ConValue,
-		ConNumber,
-		ConString,
-		ConBoolean,
-		ConEmpty,
-		ConObject,
-		ConTainer,
-		ConicRuntimeError}		from "./classes";
+import	{readFileSync}			from "fs";
+import	ohm						from "ohm-js";
 import	{question as prompt}	from "readline-sync";
+import	{	ConValue,	ConNumber,	ConString,
+			ConBoolean,	ConEmpty,	ConObject,
+		 	ConTainer, ConicRuntimeError	} from "./classes";
 
 const grammar = ohm.grammar(readFileSync("conic.ohm", "utf-8"));
 let code: string;
@@ -40,15 +35,9 @@ let semantics = grammar.createSemantics().addOperation("run", {
 
 	Statement_if(_if, boolcheck, ifcode, _elseif, _elif,
 				 boolcheck2, elifcode, _else, elsecode) {
-		// Debugging arguments
-		Array.from(arguments).forEach((val, i) => {
-			//console.log(i + ": " + val.sourceString);
-			//console.log(val.run());
-		});
-		
-		if (boolcheck.run().value) ifcode.run();
-		else if (_elseif && boolcheck2.run().value) elifcode.run();
-		else if (_else) elsecode.run();
+		if		(boolcheck.run().value)				ifcode.run();
+		else if	(_elseif && boolcheck2.run().value)	elifcode.run();
+		else if	(_else)								elsecode.run();
 	},
 
 	// conout = print statements
