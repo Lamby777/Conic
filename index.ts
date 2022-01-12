@@ -16,15 +16,16 @@ import {ConValue,
 import	{question as prompt}	from "readline-sync";
 
 const grammar = ohm.grammar(readFileSync("conic.ohm", "utf-8"));
-
-const mainFile: string = process.argv[2];
 let code: string;
 
-try {
-	code = readFileSync(mainFile ?? "main.con", "utf8");
-} catch (err) {
-	console.error(
-			"There was a problem loading code. Error:\n" + err.message);
+{ // Read code file into variable
+	const mainFile: string = process.argv[2];
+	try {
+		code = readFileSync(mainFile ?? "main.con", "utf8");
+	} catch (err) {
+		console.error(
+				"There was a problem loading code. Error:\n" + err.message);
+	}
 }
 
 let semantics = grammar.createSemantics().addOperation("run", {
@@ -98,7 +99,7 @@ let semantics = grammar.createSemantics().addOperation("run", {
 		//
 	},
 	AssignIncrement_After(varval, op) {
-		const oldval = getVariable(varval.sourceString);
+		const old = getVariable(varval.sourceString);
 		let opv = op.sourceString;
 		const modifier =	(opv === "++") ? 1	:
 							(opv === "--") ? -1	: null;
@@ -108,9 +109,9 @@ let semantics = grammar.createSemantics().addOperation("run", {
 				"No clue how you got here. L bozo, I guess.",
 				this.source.getLineAndColumnMessage());
 		
-		setVariable(varval.sourceString, oldval + modifier);
+		setVariable(varval.sourceString, old + modifier);
 
-		return oldval + modifier;
+		return old + modifier;
 	},
 
 	comment(_) {},
@@ -130,7 +131,7 @@ function execute(code: string) {
 	else
 		semantics(matched).run();
 
-	console.log("\n\n\nCode complete!\nVariable list: (For debugging)")
+	console.log("\n\n\nCode complete!\nVariable list: (For debugging)");
 	console.log(globalSpace);
 }
 
@@ -149,7 +150,7 @@ function setVariable(path: string, val: any) {
 
 function dsetVariable(path: string, val: any) {
 	let cont: ConTainer = getVariable(path);
-	cont.vhval = val; // assign to copy of reference
+	cont.heldValue = val; // assign to copy of reference
 	loset(globalSpace, path, cont); // assign copy to real
 }
 

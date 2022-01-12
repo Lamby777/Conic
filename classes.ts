@@ -43,18 +43,19 @@ export class ConObject extends ConValue {
  *	Holds a variable + its type and a
  *	reference to some ConValue object it may store */
 export class ConTainer {
-	public vhtype:	string;		// Type of held value
-	public vhval:	ConValue;	// Held value (Reference to ConValue object)
+	public heldType:	string;		// Type of held value
+	public heldValue:	ConValue;	// (Reference to ConValue object)
 
-	constructor(vhtype?: string, vhval?: ConValue) {
-		if (vhval && vhtype === undefined) // Value given without type
+	constructor(heldType?: string, heldValue?: ConValue) {
+		if (heldValue && heldType === undefined)
+			// Value given without type
 			throw new SyntaxError(
 				"Attempt to create untyped " +
 				"initialized ConTainer");
 
 		// Set given values (after guard function)
-		if (vhtype) this.vhtype = vhtype;
-		if (vhval) this.vhval = vhval;
+		if (heldType) this.heldType = heldType;
+		if (heldValue) this.heldValue = heldValue;
 	}
 }
 
@@ -70,8 +71,8 @@ export type PrimitiveType =	"num" | "str" | "bool" | "empty";
 export class ConicRuntimeError extends Error {
 	constructor(category:		string,
 				problem:		string,
-				linecolmsg:		string) {
-		super(linecolmsg + "\n" + category + " Error >> " + problem);
+				linecolMsg:		string) {
+		super(linecolMsg + "\n" + category + " Error >> " + problem);
 		this.stack = null; // Prevent spamming console with 2 traces
 	}
 }
