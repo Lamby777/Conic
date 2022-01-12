@@ -15,10 +15,10 @@ export class ConNumber extends ConValue {
 }
 
 export class ConString extends ConValue {
-	public value: string;
 	public vtype: "str";
-	constructor() {
+	constructor(public value: string = "") {
 		super();
+		//this.value = value;
 	}
 }
 

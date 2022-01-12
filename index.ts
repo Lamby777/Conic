@@ -5,7 +5,11 @@ import {readFileSync}			from "fs";
 import {get as loget,
 		set as loset}			from "lodash";
 import ohm						from "ohm-js";
-import {ConObject,
+import {ConNumber,
+		ConString,
+		ConBoolean,
+		ConEmpty,
+		ConObject,
 		ConicRuntimeError}		from "./classes";
 import	{question as prompt}	from "readline-sync";
 
@@ -36,7 +40,7 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	},
 
 	Statement_Print(_conout, exp, _eol) {
-		console.log(exp.run());
+		console.log(exp.run()[0].value);
 	},
 
 	MVarVal_Call(varval, _open, args, _close) {
@@ -58,7 +62,10 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	
 	// Literals and value-returners
 	numLiteral(_) {return parseFloat(this.sourceString)},
-	strLiteral(_) {return String(this.sourceString.slice(1,-1))},
+	strLiteral(_) {
+		const str = this.sourceString.slice(1,-1);
+		return new ConString(str);
+	},
 	ArrLiteral(_open, vals, _close) {
 		return []
 	},
@@ -76,20 +83,30 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	// Assignments
 	Statement_Assignment(node, _eol) { return node.run(); },
 	AssignEqual(varval, _eq, newval) {
-		let conObject: ConObject = loget(globalSpace, varval.sourceString);
-		if (conObject === undefined) {
-			// If variable doesn't exist
-			throw new ConicRuntimeError("Syntax",
-				"Could not assign to undefined!",
-				this.source.getLineAndColumnMessage());
-		} else {
-			conObject.value = newval.run();
-			loset(globalSpace, varval.sourceString, conObject);
-		}
+		setVariable(varval.sourceString, newval.run());
+		return getVariable(varval.sourceString).value;
 	},
-	AssignQequal(varval, mathop, _eq, coefficient) {},
-	AssignIncrement_Before(op, varval) {},
-	AssignIncrement_After(varval, op) {},
+	AssignQequal(varval, mathop, _eq, coefficient) {
+		//
+	},
+	AssignIncrement_Before(op, varval) {
+		//
+	},
+	AssignIncrement_After(varval, op) {
+		const oldval = getVariable(varval.sourceString);
+		let opv = op.sourceString;
+		const modifier =	(opv === "++") ? 1	:
+							(opv === "--") ? -1	: null;
+
+		if (modifier === null)
+			throw new ConicRuntimeError("Unknown",
+				"No clue how you got here. L bozo, I guess.",
+				this.source.getLineAndColumnMessage());
+		
+		setVariable(varval.sourceString, oldval + modifier);
+
+		return oldval + modifier;
+	},
 
 	comment(_) {},
 });
@@ -110,4 +127,21 @@ function execute(code: string) {
 
 	console.log("\n\n\nCode complete!\nVariable list: (For debugging)")
 	console.log(globalSpace);
+}
+
+function setVariable(path: string, val: any) {
+	let conObject: ConObject = loget(globalSpace, path);
+	
+	if (conObject === undefined) // If variable doesn't exist
+		throw new ConicRuntimeError("Syntax",
+			"Could not assign to undefined!",
+			this.source.getLineAndColumnMessage());
+
+	// If variable exists, assign to it
+	conObject.value = val;
+	loset(globalSpace, path, conObject);
+}
+
+function getVariable(path: string) {
+	return loget(globalSpace, path);
 }
