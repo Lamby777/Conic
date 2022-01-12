@@ -53,7 +53,7 @@ let semantics = grammar.createSemantics().addOperation("run", {
 
 	// conout = print statements
 	Statement_Print(_conout, exp, _eol) {
-		console.log(exp.run().value);
+		console.log(stringifyConval(exp.run()));
 	},
 
 	//MVarVal_Call(varval, _open, args, _close) {
@@ -76,8 +76,20 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	numLiteral(_) {
 		return new ConNumber(parseFloat(this.sourceString));
 	},
-	strLiteral(_) {
-		const str = this.sourceString.slice(1,-1);
+	strLiteral(node) {
+		// (applySyntactic<StrInterpolate> | char | "\'")*
+		const strNode = node.child(1);
+
+		// Evaluate interpolations
+		let str = "";
+		strNode.children.forEach((val) => {
+			if (val.ctorName == "synterpolate") {
+				str += val.run();
+			} else {
+				str += val.sourceString;
+			}
+		});
+		
 		return new ConString(str);
 	},
 	true(_) {return new ConBoolean(true)},
@@ -175,4 +187,15 @@ function dsetVariable(path: string, val: any) {
 
 function getVariable(path: string) {
 	return loget(globalSpace, path);
+}
+
+function stringifyConval(input: (ConValue | string)): string {
+	let stringified: string;
+
+	if (input instanceof ConString)			return input.value;
+	else if (input instanceof ConNumber)	return input.value.toString();
+	else if (input instanceof ConBoolean)	return input.value.toString();
+	else if (input instanceof ConEmpty)		return "Empty Value";
+	
+	return stringified;
 }

@@ -3,7 +3,7 @@
 bool running = false;
 running = true;
 
-if (true) {conout "hi";}
+if (true) { conout "hi"; }
 if (false) conout "bye";
 
 {
