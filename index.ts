@@ -8,7 +8,7 @@ import	ohm						from "ohm-js";
 import	{question as prompt}	from "readline-sync";
 import	{	ConValue,	ConNumber,	ConString,
 			ConBoolean,	ConEmpty,	ConObject,
-		 	ConTainer, ConicRuntimeError	} from "./classes";
+		 	ConTainer,	ConicRuntimeError		} from "./classes";
 
 const grammar = ohm.grammar(readFileSync("conic.ohm", "utf-8"));
 let code: string;
@@ -66,14 +66,14 @@ let semantics = grammar.createSemantics().addOperation("run", {
 		return new ConNumber(parseFloat(this.sourceString));
 	},
 	strLiteral(node) {
-		// (applySyntactic<StrInterpolate> | char | "\'")*
+		// (applySyntactic<strInterpolate> | char | "\'")*
 		const strNode = node.child(1);
 
 		// Evaluate interpolations
 		let str = "";
 		strNode.children.forEach((val) => {
-			if (val.ctorName == "synterpolate") {
-				str += val.run();
+			if (val.ctorName == "strInterpolate") {
+				str += val.run().value;
 			} else {
 				str += val.sourceString;
 			}
@@ -87,8 +87,8 @@ let semantics = grammar.createSemantics().addOperation("run", {
 		return []
 	},
 	
-	StrInterpolate(_p1, _, _p2) {
-		return _.run();
+	strInterpolate(_p1, exp, _p2) {
+		return makeConString(exp.run());
 	},
 
 	conin(_) {
@@ -132,6 +132,11 @@ let semantics = grammar.createSemantics().addOperation("run", {
 		setVariable(varval.sourceString, old + modifier);
 
 		return old + modifier;
+	},
+
+	id(p1, p2) {
+		let id = p1.sourceString + p2.sourceString;
+		return getVariable(id).heldValue;
 	},
 
 	comment(_) {},
@@ -179,12 +184,15 @@ function getVariable(path: string) {
 }
 
 function stringifyConval(input: (ConValue | string)): string {
-	let stringified: string;
-
+	
 	if (input instanceof ConString)			return input.value;
 	else if (input instanceof ConNumber)	return input.value.toString();
 	else if (input instanceof ConBoolean)	return input.value.toString();
 	else if (input instanceof ConEmpty)		return "Empty Value";
-	
-	return stringified;
+	//else if (input instanceof Object)		return JSON.stringify(input);
+}
+
+function makeConString(input: (ConValue | string)): ConString {
+	if (input instanceof ConString) return input;
+	else return new ConString(stringifyConval(input));
 }

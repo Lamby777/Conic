@@ -17,15 +17,16 @@ if (false) conout "bye";
 	conout "what's ours";
 }
 
-/*bool running = false;
+bool running = false;
 running = true;
+conout "Running: ||running||";
 
 //arr x = [];
 //x[y] = "yo";
 //x.y2 = "hello human";
 
-num x = 78;
-conout "||x++|| is my favorite number!";
+//num x = 78;
+//conout "||x++|| is my favorite number!";
 
 str greeting = "Hello";
 str name = conin;
@@ -36,4 +37,4 @@ void doStuff(num age) {
 	conout (age > 2 ? "I can talk!" : "googoo gaga");
 }
 
-if (running) doStuff(16);*/
+if (running) doStuff(16);

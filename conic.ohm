@@ -61,14 +61,12 @@ ConicLang {
     numLiteral		=	digit+
 				|	digit+ "." digit+				-- Floats
     
-    strLiteral		=	"\"" (synterpolate | char | "\'")*
+    strLiteral		=	"\"" (strInterpolate | char | "\'")*
 							"\""	-- DoubleQuote
-    			|	"\'" (synterpolate | char | "\"")*
+    			|	"\'" (strInterpolate | char | "\"")*
 							"\'"	-- SingleQuote
-
-	synterpolate			=	applySyntactic<StrInterpolate>
     
-    StrInterpolate			=	"||" Expression "||"
+    strInterpolate			=	"||" applySyntactic<Expression> "||"
     
     ArrLiteral		=	"[" (Args) "]"
     ObjLiteral		=	"{" LabeledArgs "}"
