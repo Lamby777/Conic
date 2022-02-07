@@ -1,12 +1,9 @@
 // ConicLang test code
 
-bool running = false;
-running = true;
+//bool running = false;
+//running = true;
 
-if (true) { conout "hi"; }
-if (false) conout "bye";
-
-{
+/*{
 	conout "it's about drive";
 	conout "it's about power";
 	conout "we stay hungry";
@@ -15,11 +12,11 @@ if (false) conout "bye";
 	conout "put in the hours";
 	conout "and take";
 	conout "what's ours";
-}
+}*/
 
-bool running = false;
-running = true;
-conout "Running: ||running||";
+//putInThe(work, hours) && take(...ours);
+
+//conout "Running: ||running||";
 
 //arr x = [];
 //x[y] = "yo";
@@ -28,13 +25,17 @@ conout "Running: ||running||";
 //num x = 78;
 //conout "||x++|| is my favorite number!";
 
-str greeting = "Hello";
-str name = conin;
-conout "||greeting||, ||name||!";
+//str greeting = "Hello";
+//conout "What's your name?";
+//conout "||greeting||, ||conin||!";
 
-void doStuff(num age) {
+/*empty doStuff(num age) {
 	conout "Hey, look! I'm doing stuff!";
 	conout (age > 2 ? "I can talk!" : "googoo gaga");
+}*/
+
+str someName(num suffix, str name) {
+	return "||conin|| | ||suffix||";
 }
 
-if (running) doStuff(16);
+conout someName(16, "wot");

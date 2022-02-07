@@ -1,6 +1,8 @@
 // Classes for index.ts
 "use strict";
 
+import {Node as OhmNode}	from "ohm-js";
+
 export abstract class ConValue {
 	abstract vtype: string;
 	abstract value: any;
@@ -36,6 +38,19 @@ export class ConObject extends ConValue {
 	public value: ConValue;
 	constructor(public vtype: string) {
 		super();
+	}
+}
+
+export class ConFunction extends ConValue {
+	public value:	Function;
+	public vtype:	string;
+
+	constructor(codeblock:		OhmNode,
+				public params:	any[],
+				vtype:			string,) { // String ending with ()
+		super();
+		this.value = () => "hi";
+		this.vtype = vtype + "()";
 	}
 }
 

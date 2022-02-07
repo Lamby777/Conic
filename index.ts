@@ -1,14 +1,16 @@
 // The Conic Language Interpreter
 "use strict";
+Error.stackTraceLimit = 2;
 
 import {get as loget,
 		set as loset}			from "lodash";
-import	{readFileSync}			from "fs";
+import {readFileSync}			from "fs";
 import	ohm						from "ohm-js";
-import	{question as prompt}	from "readline-sync";
-import	{	ConValue,	ConNumber,	ConString,
-			ConBoolean,	ConEmpty,	ConObject,
-		 	ConTainer,	ConicRuntimeError		} from "./classes";
+import {question as prompt}		from "readline-sync";
+import {ConValue,	ConNumber,	ConString,
+		ConBoolean,	ConEmpty,	ConObject,
+	 	ConTainer,	ConFunction,
+	 	ConicRuntimeError}		from "./classes";
 
 const grammar = ohm.grammar(readFileSync("conic.ohm", "utf-8"));
 let code: string;
@@ -45,9 +47,11 @@ let semantics = grammar.createSemantics().addOperation("run", {
 		console.log(stringifyConval(exp.run()));
 	},
 
-	//MVarVal_Call(varval, _open, args, _close) {
+	MVarVal_Call(varval, _open, args, _close) {
 		// Function call
-	//},
+		//console.log(getVariable(varval.sourceString).heldValue);
+		return getVariable(varval.sourceString).heldValue.value();
+	},
 
 	
 	// Declarations
@@ -57,7 +61,13 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	},
 	
 	FunctionD(rtype, fname, _open, params, _close, codeblock, _eol) {
-		//
+		let fn = new ConFunction(codeblock,
+								 params.children.map(v =>
+									//v.child(0).sourceString),
+									v.ctorName),
+								 rtype.sourceString);
+		let cont = new ConTainer(rtype.sourceString + "()", fn);
+		loset(globalSpace, fname.sourceString, cont);
 	},
 
 	
@@ -136,7 +146,13 @@ let semantics = grammar.createSemantics().addOperation("run", {
 
 	id(p1, p2) {
 		let id = p1.sourceString + p2.sourceString;
-		return getVariable(id).heldValue;
+		try {
+			return getVariable(id).heldValue;
+		} catch(e) {
+			if (e instanceof TypeError) {
+				console.log("Failed ID: " + id);
+			} throw e;
+		}
 	},
 
 	comment(_) {},
@@ -184,12 +200,12 @@ function getVariable(path: string) {
 }
 
 function stringifyConval(input: (ConValue | string)): string {
-	
 	if (input instanceof ConString)			return input.value;
 	else if (input instanceof ConNumber)	return input.value.toString();
 	else if (input instanceof ConBoolean)	return input.value.toString();
 	else if (input instanceof ConEmpty)		return "Empty Value";
 	//else if (input instanceof Object)		return JSON.stringify(input);
+	else									return input.toString();
 }
 
 function makeConString(input: (ConValue | string)): ConString {

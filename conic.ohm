@@ -1,4 +1,4 @@
-ConicLang {
+ ConicLang {
 	Program			=	Statement+
 	Statement		=	CodeBlock				-- Block
 				|	conout Expression EOL		-- Print
@@ -39,7 +39,7 @@ ConicLang {
     // List of boolean operators that go before expressions
     booleanPreoperator		=	"!"
     
-    comparisonOperator		=	">" | "<" | "==" | "!="
+    comparisonOperator		=	">" | "<" | "==" | "!=" | "&&" | "||"
     
     BooleanExpression	=	booleanPreoperator Expression		-- Prefixed
     			|	Expression comparisonOperator Expression		-- Comparison
