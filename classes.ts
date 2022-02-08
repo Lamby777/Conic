@@ -3,6 +3,8 @@
 
 import {Node as OhmNode}	from "ohm-js";
 
+// Conic types
+
 export abstract class ConValue {
 	abstract vtype: string;
 	abstract value: any;
@@ -42,15 +44,13 @@ export class ConObject extends ConValue {
 }
 
 export class ConFunction extends ConValue {
-	public value:	Function;
 	public vtype:	string;
 
-	constructor(codeblock:		OhmNode,
+	constructor(public value:	OhmNode,
 				public params:	any[],
-				vtype:			string,) { // String ending with ()
+				vtype:			string) { // Returned type
 		super();
-		this.value = () => "hi";
-		this.vtype = vtype + "()";
+		this.vtype = vtype + "()"; // specify fn
 	}
 }
 

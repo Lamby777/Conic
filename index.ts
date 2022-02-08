@@ -10,7 +10,7 @@ import {question as prompt}		from "readline-sync";
 import {ConValue,	ConNumber,	ConString,
 		ConBoolean,	ConEmpty,	ConObject,
 	 	ConTainer,	ConFunction,
-	 	ConicRuntimeError}		from "./classes";
+		ConicRuntimeError}		from "./classes";
 
 const grammar = ohm.grammar(readFileSync("conic.ohm", "utf-8"));
 let code: string;
@@ -50,9 +50,23 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	MVarVal_Call(varval, _open, args, _close) {
 		// Function call
 		//console.log(getVariable(varval.sourceString).heldValue);
-		return getVariable(varval.sourceString).heldValue.value();
-	},
+		const conF = getVariable(varval.sourceString).heldValue.value;
+		const block = conF.children[0].children[0].children;
+		const inner = block.slice(1, block.length - 1);
+		const statements = inner;
 
+		console.log(inner[0].sourceString);
+		console.log(inner.length);
+		
+		for (const i in statements) {
+			const val = statements[i];
+			
+			if (val.ctorName == "Return") {}
+			console.log(i + " >> " + val.sourceString);
+		}
+		
+		return block.run();
+	},
 	
 	// Declarations
 	VariableD(vtype, vname, _equal, newval, _eol) {
@@ -112,6 +126,10 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	CodeBlock(_open, statements, _close) {
 		//statements.forEach((v: any) => v.run());
 		statements.run();
+	},
+
+	Statement_Return(_ret, exp, _eol) {
+		return exp.run();
 	},
 
 	
@@ -175,6 +193,11 @@ function execute(code: string) {
 	console.log("\n\n\nCode complete!\nVariable list: (For debugging)");
 	console.log(globalSpace);
 }
+
+
+
+
+
 
 function setVariable(path: string, val: any) {
 	let conObject: ConObject = loget(globalSpace, path);

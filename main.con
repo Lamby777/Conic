@@ -35,7 +35,8 @@
 }*/
 
 str someName(num suffix, str name) {
-	return "||conin|| | ||suffix||";
+	str res = "||conin|| | ||suffix||";
+	return res;
 }
 
 conout someName(16, "wot");
