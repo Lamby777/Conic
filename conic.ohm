@@ -53,7 +53,7 @@
                 |	ObjLiteral
     
     char			=	escapeSequence
-		    	|	~"\\" ~"\"" ~"'" ~"\n" any
+		    	|	~("\\" | "\"" | "'" | "\n") any
     
     escapeSequence	=	"\\\\" | "\\\"" | "\\'"
 				| "\\n" | "\\t" | "\\||" // | hexSequence
@@ -61,12 +61,10 @@
     numLiteral		=	digit+
 				|	digit+ "." digit+				-- Floats
     
-    strLiteral		=	"\"" (strInterpolate | char | "\'")*
-							"\""	-- DoubleQuote
-    			|	"\'" (strInterpolate | char | "\"")*
-							"\'"	-- SingleQuote
     
-    strInterpolate			=	"||" applySyntactic<Expression> "||"
+    strInterpolate			=	"~|" applySyntactic<Expression> "|~"
+    
+    strLiteral		=	("\""   (strInterpolate | char | "\'")*   "\"") -- DoubleQuote
     
     ArrLiteral		=	"[" (Args) "]"
     ObjLiteral		=	"{" LabeledArgs "}"

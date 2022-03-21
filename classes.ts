@@ -2,6 +2,7 @@
 "use strict";
 
 import {Node as OhmNode}	from "ohm-js";
+import	crypto					from "crypto";
 
 // Conic types
 
@@ -79,7 +80,10 @@ export type PrimitiveValue =	ConNumber	| ConString |
 
 export type PrimitiveType =	"num" | "str" | "bool" | "empty";
 
-
+export interface Call {
+	container:	"global" | ConTainer;
+	hash:		string;
+}
 
 // Errors
 
@@ -90,4 +94,9 @@ export class ConicRuntimeError extends Error {
 		super(linecolMsg + "\n" + category + " Error >> " + problem);
 		this.stack = null; // Prevent spamming console with 2 traces
 	}
+}
+
+export function hash(input: any, format?: string): string {
+	return crypto.createHash("sha256")
+		.update(input.toString()).digest(<any>(format ? format : "hex"));
 }

@@ -9,9 +9,11 @@ import	ohm						from "ohm-js";
 import {question as prompt}		from "readline-sync";
 import {ConValue,	ConNumber,	ConString,
 		ConBoolean,	ConEmpty,	ConObject,
-	 	ConTainer,	ConFunction,
-		ConicRuntimeError}		from "./classes";
+	 	ConTainer,	ConFunction,Call,
+		hash,		ConicRuntimeError,
+											}	from "./classes";
 
+const SEPARATOR = "--------------------------------";
 const grammar = ohm.grammar(readFileSync("conic.ohm", "utf-8"));
 let code: string;
 
@@ -21,7 +23,7 @@ let code: string;
 		code = readFileSync(mainFile ?? "main.con", "utf8");
 	} catch (err) {
 		console.error(
-				"There was a problem loading code. Error:\n" +
+				"There was a problem loading your code. Error:\n" +
 				err.message);
 	}
 }
@@ -49,23 +51,23 @@ let semantics = grammar.createSemantics().addOperation("run", {
 
 	MVarVal_Call(varval, _open, args, _close) {
 		// Function call
-		//console.log(getVariable(varval.sourceString).heldValue);
-		const conF = getVariable(varval.sourceString).heldValue.value;
-		const block = conF.children[0].children[0].children;
-		const inner = block.slice(1, block.length - 1);
-		const statements = inner;
+		const cont: ConTainer = getVariable(varval.sourceString);
+		const conF = cont.heldValue.value;
 
-		console.log(inner[0].sourceString);
-		console.log(inner.length);
+		// Push to call stack
+		callStack.push({
+			container: cont,
+			hash: hash(varval.sourceString + Date.now()),
+		});
 		
-		for (const i in statements) {
-			const val = statements[i];
-			
-			if (val.ctorName == "Return") {}
-			console.log(i + " >> " + val.sourceString);
-		}
-		
-		return block.run();
+		const block = conF.children[0];
+		//const statements = inner;
+
+		//console.log(block.sourceString);
+		console.log(block.sourceString);
+
+		callStack.pop();
+		return "res";
 	},
 	
 	// Declarations
@@ -178,20 +180,46 @@ let semantics = grammar.createSemantics().addOperation("run", {
 
 
 
-const globalSpace: Record<any, any> = {};
+const globalSpace:	Record<any, any>	= {}
+const callStack:	Call[]		= [];
+
+console.log(
+`${SEPARATOR}
+Starting code execution...
+${SEPARATOR}\n`);
 
 execute(code);
+
+
+
+
 
 function execute(code: string) {
 	let matched = grammar.match(code);
 	
-	if (matched.failed())
+	if (matched.failed()) {
 		throw SyntaxError("Compiler error: " + matched);
-	else
-		semantics(matched).run();
+	} else {
+		// Push global to call stack if not exists
+		if (callStack.length === 0) callStack.push({
+										container: "global",
+										hash: hash(Date.now())
+									});
 
-	console.log("\n\n\nCode complete!\nVariable list: (For debugging)");
-	console.log(globalSpace);
+		// Run code
+		semantics(matched).run();
+	}
+
+	console.log(
+`\n${SEPARATOR}
+	Code complete!
+	
+	Global scope (for debug)
+
+${JSON.stringify(globalSpace)}
+
+${SEPARATOR}`);
+	
 }
 
 
@@ -223,6 +251,8 @@ function getVariable(path: string) {
 }
 
 function stringifyConval(input: (ConValue | string)): string {
+	if (input instanceof ConTainer)			input = input.heldValue;
+	
 	if (input instanceof ConString)			return input.value;
 	else if (input instanceof ConNumber)	return input.value.toString();
 	else if (input instanceof ConBoolean)	return input.value.toString();
