@@ -2,6 +2,7 @@
 "use strict";
 Error.stackTraceLimit = 2;
 
+import {version as ver}			from "./package.json";
 import {get as loget,
 		set as loset}			from "lodash";
 import {readFileSync}			from "fs";
@@ -13,7 +14,7 @@ import {ConValue,	ConNumber,	ConString,
 		hash,		ConicRuntimeError,
 											}	from "./classes";
 
-const SEPARATOR = "--------------------------------";
+const SEPARATOR = "----------------------------------";
 const grammar = ohm.grammar(readFileSync("conic.ohm", "utf-8"));
 let code: string;
 
@@ -185,7 +186,7 @@ const callStack:	Call[]		= [];
 
 console.log(
 `${SEPARATOR}
-Starting code execution...
+Starting code execution... v${ver}
 ${SEPARATOR}\n`);
 
 execute(code);

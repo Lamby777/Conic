@@ -16,7 +16,7 @@ running = true;*/
 
 //putInThe(work, hours) && take(...ours);
 
-//conout "Running: ||running||";
+//conout "Running: ~|running|~";
 
 //arr x = [];
 //x[y] = "yo";
@@ -27,7 +27,7 @@ conout "~|x++|~";
 
 //str greeting = "Hello";
 //conout "What's your name?";
-//conout "||greeting||, ||conin||!";
+//conout "~|greeting|~, ~|conin|~!";
 
 /*empty doStuff(num age) {
 	conout "Hey, look! I'm doing stuff!";
@@ -35,7 +35,7 @@ conout "~|x++|~";
 }*/
 
 /*str someName(num suffix, str name) {
-	str res = "||conin|| | ||suffix||";
+	str res = "~|conin|~ | ~|suffix|~";
 	return res;
 }
 

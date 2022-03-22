@@ -6,7 +6,8 @@
 		"preserveConstEnums": true,
 		"target": "esnext",
 		"sourceMap": false,
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"resolveJsonModule": true
 	},
 	"exclude": [
 		"node_modules"
