@@ -3,134 +3,134 @@
 	Statement		=	CodeBlock				-- Block
 				|	conout Expression EOL		-- Print
 				|	Declaration					-- Declaration
-                |	Assignment EOL				-- Assignment
-                |	Expression	EOL				-- Call
-            	|	break EOL					-- Break
-            	|	return Expression? EOL		-- Return
-                |  if Expression Statement
-                 (else if Expression Statement)*
-                 (else Statement)?              -- if
-              	|  while Expression Statement	-- while
-              	|  for "("
-                 (Type id "=" Expression)? ";"
-                 Expression? ";"
-                 Assignment? ")"
-                 Statement						-- for
-            	|	comment
-    Assignment		=	AssignEqual | AssignIncrement | AssignQequal
-    AssignEqual		=	VarVal "=" Expression
-    AssignIncrement	=	(VarVal incrementOp) -- Before
-    			| (incrementOp VarVal) -- After
-    AssignQequal	=	VarVal mathOp "=" Expression
-    
-    Expression		=	conin
+				|	Assignment EOL				-- Assignment
+				|	Expression	EOL				-- Call
+				|	break EOL					-- Break
+				|	return Expression? EOL		-- Return
+				|  if Expression Statement
+				 (else if Expression Statement)*
+				 (else Statement)?              -- if
+			  	|  while Expression Statement	-- while
+			  	|  for "("
+				 (Type id "=" Expression)? ";"
+				 Expression? ";"
+				 Assignment? ")"
+				 Statement						-- for
+				|	comment
+	Assignment		=	AssignEqual | AssignIncrement | AssignQequal
+	AssignEqual		=	VarVal "=" Expression
+	AssignIncrement	=	(VarVal incrementOp) -- Before
+				| (incrementOp VarVal) -- After
+	AssignQequal	=	VarVal mathOp "=" Expression
+	
+	Expression		=	conin
 				|	Literal
-                |	BooleanExpression
-                |	Assignment
-                |	TernaryOperation
-                |	VarVal
-                |	"(" Expression ")"		-- NestedExpression
-    
-    incrementOp		=	"++" | "--"
-    mathOp			=	"+" | "-" | "*" | "/"
-    
-    TernaryOperation		=	Expression "?" Expression (":" Expression)?
-    
-    // List of boolean operators that go before expressions
-    booleanPreoperator		=	"!"
-    
-    comparisonOperator		=	">" | "<" | "==" | "!=" | "&&" | "||"
-    
-    BooleanExpression	=	booleanPreoperator Expression		-- Prefixed
-    			|	Expression comparisonOperator Expression		-- Comparison
-    
-    Literal			=	null
+				|	BooleanExpression
+				|	Assignment
+				|	TernaryOperation
+				|	VarVal
+				|	"(" Expression ")"		-- NestedExpression
+	
+	incrementOp		=	"++" | "--"
+	mathOp			=	"+" | "-" | "*" | "/"
+	
+	TernaryOperation		=	Expression "?" Expression (":" Expression)?
+	
+	// List of boolean operators that go before expressions
+	booleanPreoperator		=	"!"
+	
+	comparisonOperator		=	">" | "<" | "==" | "!=" | "&&" | "||"
+	
+	BooleanExpression	=	booleanPreoperator Expression		-- Prefixed
+				|	Expression comparisonOperator Expression		-- Comparison
+	
+	Literal			=	null
 	   			|	true
-    			|	false
-        		|	numLiteral
-        		|	strLiteral
-                |	ArrLiteral
-                |	ObjLiteral
-    
-    char			=	escapeSequence
-		    	|	~("\\" | "\"" | "'" | "\n") any
-    
-    escapeSequence	=	"\\\\" | "\\\"" | "\\'"
+				|	false
+				|	numLiteral
+				|	strLiteral
+				|	ArrLiteral
+				|	ObjLiteral
+	
+	char			=	escapeSequence
+				|	~("\\" | "\"" | "'" | "\n") any
+	
+	escapeSequence	=	"\\\\" | "\\\"" | "\\'"
 				| "\\n" | "\\t" | "\\~|" | "\\|~" // | hexSequence
-    
-    numLiteral		=	digit+
+	
+	numLiteral		=	digit+
 				|	digit+ "." digit+				-- Floats
-    
-    
-    strInterpolate			=	"~|" applySyntactic<Expression> "|~"
-    
-    strLiteral		=	("\""   (strInterpolate | char | "\'")*   "\"") -- DoubleQuote
-    
-    ArrLiteral		=	"[" (Args) "]"
-    ObjLiteral		=	"{" LabeledArgs "}"
-    
-    //FVarVal		=	Call | VarVal
-    
-    VarVal			= MVarVal | Literal
-    
-    MVarVal			=	VarVal "(" Args ")"		-- Call
-    			|	SubVarVal
-                |	id
-    
-    SubVarVal		= VarVal "[" Expression "]"	-- Superscript
-    			|	VarVal "." id					-- DotNotation
-                
-    
-    //Call			=	id "(" Args ")"
-    //Call			=	FVarVal "(" Args ")"
-    Declaration		=	VariableD | FunctionD | ClassD
-    VariableD		=	Type id ("=" Expression)? EOL
-    FunctionD		=	Type id "(" Parameters ")" Statement EOL?
-    ClassD			=	ClassType id CodeBlock
-    EOL				=	";"
-    Args			=	ListOf<Expression, ",">
-    LabeledVals		=	id ":" Expression
-    LabeledArgs		=	ListOf<LabeledVals, ",">
-    Parameters		=	(Type id ("," Type id)*)?
-    CodeBlock		=	"{" Statement* "}"
-    ClassType		=	class | int
-    Type			=	primitiveType | id
-    
-    id				=	~keyword letter idchar*
-    idchar			=	"_" | alnum
-    primitiveType	=	empty | bool | num | str | arr | obj
-    
-    keyword			=	bool | if | break | else | num
+	
+	
+	strInterpolate			=	"~|" applySyntactic<Expression> "|~"
+	
+	strLiteral		=	("\""   (strInterpolate | char | "\'")*   "\"") -- DoubleQuote
+	
+	ArrLiteral		=	"[" (Args) "]"
+	ObjLiteral		=	"{" LabeledArgs "}"
+	
+	//FVarVal		=	Call | VarVal
+	
+	VarVal			= MVarVal | Literal
+	
+	MVarVal			=	VarVal "(" Args ")"		-- Call
+				|	SubVarVal
+				|	id
+	
+	SubVarVal		= VarVal "[" Expression "]"	-- Superscript
+				|	VarVal "." id					-- DotNotation
+				
+	
+	//Call			=	id "(" Args ")"
+	//Call			=	FVarVal "(" Args ")"
+	Declaration		=	VariableD | FunctionD | ClassD
+	VariableD		=	Type id ("=" Expression)? EOL
+	FunctionD		=	Type id "(" Parameters ")" Statement EOL?
+	ClassD			=	ClassType id CodeBlock
+	EOL				=	";"
+	Args			=	ListOf<Expression, ",">
+	LabeledVals		=	id ":" Expression
+	LabeledArgs		=	ListOf<LabeledVals, ",">
+	Parameters		=	(Type id ("," Type id)*)?
+	CodeBlock		=	"{" Statement* "}"
+	ClassType		=	class | int
+	Type			=	primitiveType | id
+	
+	id				=	~keyword letter idchar*
+	idchar			=	"_" | alnum
+	primitiveType	=	empty | bool | num | str | arr | obj
+	
+	keyword			=	bool | if | break | else | num
 				| conin | conout | new | return | int | null
 				| while | class | for | true | false | str
 				| empty | arr | obj
 
-    // Types
-    empty			=	"empty" ~idchar
-    bool			=	"bool" ~idchar
-    num				=	"num" ~idchar
-    str				=	"str" ~idchar
-    int				=	"int" ~idchar	// INTERFACE, NOT INTEGER
-    class			=	"class" ~idchar
-    arr				=	"arr" ~idchar
-    obj				=	"obj" ~idchar
-    null			=	"null" ~idchar
-    
-    // Keywords
-    if				=	"if" ~idchar
-    break			=	"break" ~idchar
-    else			=	"else" ~idchar
-    for				=	"for" ~idchar
-    new				=	"new" ~idchar
-    return			=	"return" ~idchar
-    while			=	"while" ~idchar
-    true			=	"true" ~idchar
-    false			=	"false" ~idchar
+	// Types
+	empty			=	"empty" ~idchar
+	bool			=	"bool" ~idchar
+	num				=	"num" ~idchar
+	str				=	"str" ~idchar
+	int				=	"int" ~idchar	// INTERFACE, NOT INTEGER
+	class			=	"class" ~idchar
+	arr				=	"arr" ~idchar
+	obj				=	"obj" ~idchar
+	null			=	"null" ~idchar
+	
+	// Keywords
+	if				=	"if" ~idchar
+	break			=	"break" ~idchar
+	else			=	"else" ~idchar
+	for				=	"for" ~idchar
+	new				=	"new" ~idchar
+	return			=	"return" ~idchar
+	while			=	"while" ~idchar
+	true			=	"true" ~idchar
+	false			=	"false" ~idchar
 	conin			=	"conin" ~idchar
 	conout			=	"conout" ~idchar
 
-    space			:=	"\x20" | "\x09" | "\x0A" | "\x0D"
-    comment			=	slComment | mlComment
-    slComment		=	"//" (~"\n" any)* "\n"
-    mlComment		=	"/*" (~"*/" any)* "*/"
+	space			:=	"\x20" | "\x09" | "\x0A" | "\x0D"
+	comment			=	slComment | mlComment
+	slComment		=	"//" (~"\n" any)* "\n"
+	mlComment		=	"/*" (~"*/" any)* "*/"
 }
