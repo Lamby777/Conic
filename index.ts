@@ -1,6 +1,6 @@
 // The Conic Language Interpreter
 "use strict";
-Error.stackTraceLimit = 2;
+Error.stackTraceLimit = 3;
 
 import {version as ver}			from "./package.json";
 import {get as loget,
@@ -159,10 +159,11 @@ let semantics = grammar.createSemantics().addOperation("run", {
 			throw new ConicRuntimeError("Unknown",
 				"No clue how you got here. L bozo, I guess.",
 				this.source.getLineAndColumnMessage());
-		
-		setVariable(varval.sourceString, old + modifier);
 
-		return old + modifier;
+		const newVal = old.heldValue.value + modifier;
+		setVariable(varval.sourceString, newVal);
+
+		return newVal;
 	},
 
 	id(p1, p2) {

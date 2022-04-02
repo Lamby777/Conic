@@ -19,8 +19,8 @@
 				|	comment
 	Assignment		=	AssignEqual | AssignIncrement | AssignQequal
 	AssignEqual		=	VarVal "=" Expression
-	AssignIncrement	=	(VarVal incrementOp) -- Before
-				| (incrementOp VarVal) -- After
+	AssignIncrement	=	(VarVal incrementOp) -- After
+				| (incrementOp VarVal) -- Before
 	AssignQequal	=	VarVal mathOp "=" Expression
 	
 	Expression		=	conin
