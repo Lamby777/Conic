@@ -2,7 +2,7 @@
 "use strict";
 
 import {Node as OhmNode}	from "ohm-js";
-import	crypto					from "crypto";
+import crypto				from "crypto";
 
 // Conic types
 

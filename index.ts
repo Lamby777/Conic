@@ -64,11 +64,15 @@ let semantics = grammar.createSemantics().addOperation("run", {
 		const block = conF.children[0];
 		//const statements = inner;
 
+		//console.log(block.ctorName);
 		//console.log(block.sourceString);
-		console.log(block.sourceString);
 
+		const res = block.run();
+
+		//console.log(block.sourceString);
+		
 		callStack.pop();
-		return "res";
+		return res;
 	},
 	
 	// Declarations
@@ -111,7 +115,7 @@ let semantics = grammar.createSemantics().addOperation("run", {
 	true(_) {return new ConBoolean(true)},
 	false(_) {return new ConBoolean(false)},
 	ArrLiteral(_open, vals, _close) {
-		return []
+		return [];
 	},
 	
 	strInterpolate(_p1, exp, _p2) {
@@ -124,6 +128,14 @@ let semantics = grammar.createSemantics().addOperation("run", {
 
 	Expression_NestedExpression(_open, exp, _close) {
 		return exp.run();
+	},
+
+	Statement_Block(block) {
+		const innercode = block.children[1];
+
+		innercode.children.forEach((v) => {
+			// For each statement inside code block...
+		});
 	},
 
 	CodeBlock(_open, statements, _close) {

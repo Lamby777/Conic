@@ -22,8 +22,8 @@ running = true;*/
 //x[y] = "yo";
 //x.y2 = "hello human";
 
-num x = 78;
-conout "~|x++|~";
+//num x = 78;
+//conout "~|x++|~";
 
 //str greeting = "Hello";
 //conout "What's your name?";
@@ -34,9 +34,9 @@ conout "~|x++|~";
 	conout (age > 2 ? "I can talk!" : "googoo gaga");
 }*/
 
-/*str someName(num suffix, str name) {
+str someName(num suffix, str name) {
 	str res = "~|conin|~ | ~|suffix|~";
 	return res;
 }
 
-conout someName(16, "wot");*/
+conout someName(16, "wot");
